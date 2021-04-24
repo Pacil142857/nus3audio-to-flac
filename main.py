@@ -1,9 +1,10 @@
 import os
 import subprocess
 from pydub import AudioSegment
+from shutil import rmtree
 
-# Find every file in input
-nus3audio_files = [file.path for file in os.scandir(r'.\input')]
+# Find every file (recursively) in input
+nus3audio_files = [os.path.join(path, file) for path, _, files in os.walk(r'.\input') for file in files]
 
 # These lists get used later in the program
 lopus_files = []
@@ -75,9 +76,16 @@ for file in lopus_files:
     command = [r'.\tools\vgmstream\test.exe', '-l', num_loops, '-f', fade_duration, '-o', new_filepath, file]
     subprocess.run(command)
     
+    # Add the new file to wav_files
     wav_files.append(new_filepath)
 
 # Convert wav files to flac files
-# Example:
-# song = AudioSegment.from_wav('foo.wav')
-# song.export('bar.flac', format='flac')
+for file in wav_files:
+    # Get the filename
+    filename = file[file.rfind('\\') + 1:-4]
+    
+    # Convert the file
+    subprocess.run([r'.\tools\sox\sox.exe', file, '.\\output\\' + filename + '.flac'])
+
+# Delete the tmp folder
+rmtree('tmp')
