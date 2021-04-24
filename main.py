@@ -11,6 +11,11 @@ try:
 except FileExistsError:
     pass
 
+# Remove .gitkeep files if they exist
+for file in (r'.\input\.gitkeep', r'.\output\.gitkeep'):
+    if os.path.isfile(file):
+        os.remove(file)
+
 # Extract lopus files from the nus3audio files in input
 for file in nus3audio_files:
     
