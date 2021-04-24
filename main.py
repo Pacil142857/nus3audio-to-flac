@@ -4,7 +4,10 @@ from pydub import AudioSegment
 
 # Find every file in input
 nus3audio_files = [file.path for file in os.scandir(r'.\input')]
+
+# These lists get used later in the program
 lopus_files = []
+wav_files = []
 
 # Create tmp directory to store lopus files
 try:
@@ -49,18 +52,30 @@ for file in nus3audio_files:
 
 # Load settings
 with open('config.txt') as f:
-    settings = []
     
+    # Set default
+    num_loops = '1'
+    fade_duration = '10'
+    
+    # Get the number of loops and the fade duration
     for line in f:
-        settings.append(line[line.rfind('=') + 1:])
-        
-    num_loops, fade_duration = settings
+        if 'NUM_LOOPS=' in line:
+            num_loops = line[line.rfind('=') + 1:]
+        elif 'FADE_DURATION=' in line:
+            fade_duration = line[line.rfind('=') + 1:]
+
 
 # Convert lopus files to wav files
 for file in lopus_files:
+    # Get the filename and the new file path
     filename = file[file.rfind('\\') + 1:-6]
-    new_filepath = '.\\output\\' + filename + '.wav'
-    command = [r'.\tools\vgmstream\test.exe', '-l', str(num_loops), '-f', str(fade_duration), '-o', new_filepath, file]
+    new_filepath = '.\\tmp\\' + filename + '.wav'
+    
+    # Convert the lopus file to a wav file
+    command = [r'.\tools\vgmstream\test.exe', '-l', num_loops, '-f', fade_duration, '-o', new_filepath, file]
+    subprocess.run(command)
+    
+    wav_files.append(new_filepath)
 
 # Convert wav files to flac files
 # Example:
