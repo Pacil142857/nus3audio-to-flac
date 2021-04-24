@@ -1,6 +1,5 @@
 import os
 import subprocess
-from pydub import AudioSegment
 from shutil import rmtree
 
 # Delete tmp directory
@@ -41,9 +40,8 @@ except FileExistsError:
     pass
 
 # Remove .gitkeep files if they exist
-# TODO: Remove the "and False" part once the program is finished
 for file in (r'.\input\.gitkeep', r'.\output\.gitkeep'):
-    if os.path.isfile(file) and False:
+    if os.path.isfile(file):
         os.remove(file)
 
 # Extract lopus files from the nus3audio files in input
@@ -100,7 +98,7 @@ for file in lopus_files:
     
     # Convert the lopus file to a wav file
     command = [r'.\tools\vgmstream\test.exe', '-l', num_loops, '-f', fade_duration, '-o', new_filepath, path]
-    subprocess.run(command)
+    subprocess.run(command, stdout=subprocess.DEVNULL)
     
     # Add the new file to wav_files
     wav_files.append(File(new_filepath))
