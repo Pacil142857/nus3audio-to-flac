@@ -1,3 +1,4 @@
 input/.keep
 output/.keep
 __pycache__/
+tmp/
