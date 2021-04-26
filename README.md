@@ -6,6 +6,14 @@ This is a simple batch converter that converts nus3audio files to flac files. It
 
 ## Usage
 
-First, edit the settings in config.txt to your liking. NUM_LOOPS is the number of loops the song will do through (decimals are valid), and FADE_DURATION is the amount of time in seconds that it will fade out near the end. If the song loops, this time will be added onto the song.
+First, edit the settings in config.ini to your liking.
+
+* `Num_loops` is the number of loops the song will do through (decimals are valid)
+* `Fade_duration` is the amount of time in seconds that it will fade out near the end.
+  * If the song loops, this time will be added onto the song.
+* `Include_cover_img`, if set to "True" (capitalization matters!), will use `cover.png`/`cover.jpg`/`cover.jpeg` as the cover image for all of the files converted.
+  * If it's set to anything else, such as "False", then there won't be a cover image.
+* `Empty_input_folder`, if set to "True" (capitalization matters!), will delete all files in /input after the program has finished.
+  * If it's set to anything else, such as "False", then all the files in /input won't be deleted.
 
 After that, simply run the program using a version of Python greater than or equal to 3.6 and the files will be converted.
