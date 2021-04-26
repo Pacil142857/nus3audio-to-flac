@@ -1,5 +1,6 @@
 import os
 import subprocess
+from configparser import ConfigParser
 from shutil import rmtree
 
 # Delete tmp directory
@@ -75,19 +76,18 @@ for file in nus3audio_files:
     lopus_files.append(File(new_filepath))
 
 # Load settings
-with open('config.txt') as f:
-    
-    # Set default
-    num_loops = '1'
-    fade_duration = '10'
-    
-    # Get the number of loops and the fade duration
-    for line in f:
-        if 'NUM_LOOPS=' in line:
-            num_loops = line[line.rfind('=') + 1:]
-        elif 'FADE_DURATION=' in line:
-            fade_duration = line[line.rfind('=') + 1:]
+config = ConfigParser()
+config.read('config.ini')
+settings = config['Settings']
 
+# Set defaults
+num_loops = 1.0
+fade_duration = 10.0
+
+# Get the data
+num_loops = settings.get('Num_loops')
+fade_duration = settings.get('Fade_duration')
+include_cover_img = True if settings.get('Include_cover_image') == 'True' else False
 
 # Convert lopus files to wav files
 for file in lopus_files:
