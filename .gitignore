@@ -1,3 +1,7 @@
 __pycache__/
 tmp/
 input/*.nus3audio
+output/*.flac
+cover.png
+cover.jpg
+cover.jpeg
