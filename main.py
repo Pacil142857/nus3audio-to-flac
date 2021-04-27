@@ -90,7 +90,7 @@ fade_duration = 10.0
 num_loops = settings.get('Num_loops')
 fade_duration = settings.get('Fade_duration')
 artist = settings.get('Artist')
-include_cover_img = True if settings.get('Include_cover_image') == 'True' else False
+cover_img = settings.get('Cover_image')
 empty_input_dir = True if settings.get('Empty_input_folder') == 'True' else False
 
 # Convert lopus files to wav files
@@ -121,16 +121,16 @@ for file in wav_files:
     subprocess.run([r'..\tools\sox\sox.exe', '.' + file.path, '.\\' + file.rel_path + '.flac'])
     
     # Open the audio file
-    if include_cover_img or artist:
+    if cover_img or artist:
         try:
             audio = FLAC(file.rel_path + '.flac')
         except (FileNotFoundError, MutagenError):
             print('Something went wrong, so the cover image and artist won\'t be included.')
-            include_cover_img = False
+            cover_img = False
             artist = False
             
     # Add the cover image
-    if include_cover_img:
+    if cover_img:
             
         # Create an image
         img = Picture()
@@ -138,28 +138,30 @@ for file in wav_files:
         img.desc = 'front cover'
         
         # Open the image
-        for file in ('cover.jpeg', 'cover.jpg', 'cover.png'):
-            try:
-                with open('..\\' + file, 'rb') as f:
-                    image_data = f.read()
-                    if image_data:
-                        img.data = image_data
-            except FileNotFoundError:
-                pass
+        try:
+            with open('..\\' + cover_img, 'rb') as f:
+                img.data = f.read()
+        except FileNotFoundError:
+            print('Cover image not found, so a cover image won\'t be included.')
+            cover_img = False
+            img_found = False
+            img.data = True # This is a little hacky, but it works fine.
+        else:
+            img_found = True
         
         # If the image exists, use it as the cover image.
-        if not img.data:
-            print('Cover image not found (perhaps you didn\'t name it cover.png?), so a cover image won\'t be included.')
-            include_cover_img = False
-        else:
+        if img_found:
             audio.add_picture(img)
+        elif not img.data:
+            print('Cover image not found, so a cover image won\'t be included.')
+            cover_img = False
     
     # Add the artist
     if artist:
         audio['ARTIST'] = artist
     
     # Save the audio
-    if include_cover_img or artist:
+    if cover_img or artist:
         audio.save()
 
 
