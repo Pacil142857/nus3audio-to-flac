@@ -5,3 +5,7 @@ output/*.flac
 cover.png
 cover.jpg
 cover.jpeg
+main.exe
+main.spec
+build/
+dist/
