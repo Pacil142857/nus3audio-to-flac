@@ -161,7 +161,12 @@ for file in wav_files:
     # Save the audio
     if include_cover_img or artist:
         audio.save()
-            
+
+
+# Delete the contents of the input folder
+if empty_input_dir:
+    rmtree(r'..\input')
+    os.mkdir(r'..\input')
 
 # Delete the tmp folder
-rmtree('..\\tmp')
+rmtree(r'..\tmp')
