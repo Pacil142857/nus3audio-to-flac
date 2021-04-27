@@ -16,5 +16,7 @@ First, edit the settings in config.ini to your liking.
   * If the settings is set to anything else, such as "False", then there won't be a cover image.
 * `Empty_input_folder`, if set to "True" (capitalization matters!), will delete all files in /input after the program has finished.
   * If it's set to anything else, such as "False", then all the files in /input won't be deleted.
+* `Artist` will set the artist of the song to whatever it's equal to.
+  * If left empty, there will be no artist for the song.
 
 After that, simply run the program using a version of Python greater than or equal to 3.6 and the files will be converted.
