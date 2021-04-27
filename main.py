@@ -1,6 +1,8 @@
 import os
 import subprocess
 from configparser import ConfigParser
+from mutagen import MutagenError
+from mutagen.flac import FLAC, Picture
 from shutil import rmtree
 
 # Delete tmp directory
@@ -88,6 +90,7 @@ fade_duration = 10.0
 num_loops = settings.get('Num_loops')
 fade_duration = settings.get('Fade_duration')
 include_cover_img = True if settings.get('Include_cover_image') == 'True' else False
+empty_input_dir = True if settings.get('Empty_input_folder') == 'True' else False
 
 # Convert lopus files to wav files
 for file in lopus_files:
@@ -114,7 +117,42 @@ for file in wav_files:
         except FileExistsError:
             pass
     # Convert the file
-    subprocess.run([r'..\tools\sox\sox.exe', '.' + file.path, '..\\output\\' + file.rel_path + '.flac'])
+    subprocess.run([r'..\tools\sox\sox.exe', '.' + file.path, '.\\' + file.rel_path + '.flac'])
+    
+    # Add the cover image
+    if include_cover_img:
+        
+        # Open the audio file
+        try:
+            audio = FLAC(file.rel_path + '.flac')
+        except (FileNotFoundError, MutagenError):
+            print('Something went wrong, so the cover image won\'t be included.')
+            include_cover_img = False
+        else:
+            
+            # Create an image
+            img = Picture()
+            img.type = 3
+            img.desc = 'front cover'
+            
+            # Open the image
+            for file in ('cover.jpeg', 'cover.jpg', 'cover.png'):
+                try:
+                    with open('..\\' + file, 'rb') as f:
+                        image_data = f.read()
+                        if image_data:
+                            img.data = image_data
+                except FileNotFoundError:
+                    pass
+            
+            # If the image exists, use it as the cover image.
+            if not img.data:
+                print('Cover image not found (perhaps you didn\'t name it cover.png?), so a cover image won\'t be included.')
+                include_cover_img = False
+            else:
+                audio.add_picture(img)
+                audio.save()
+            
 
 # Delete the tmp folder
 rmtree('..\\tmp')
