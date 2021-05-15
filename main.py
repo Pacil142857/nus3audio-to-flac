@@ -89,9 +89,11 @@ fade_duration = 10.0
 # Get the data
 num_loops = settings.get('Num_loops')
 fade_duration = settings.get('Fade_duration')
-artist = settings.get('Artist')
 cover_img = settings.get('Cover_image')
 empty_input_dir = True if settings.get('Empty_input_folder') == 'True' else False
+
+# Get song metadata
+metadata = config['Song Metadata'].items()
 
 # Convert lopus files to wav files
 for file in lopus_files:
@@ -121,13 +123,13 @@ for file in wav_files:
     subprocess.run([r'..\tools\sox\sox.exe', '.' + file.path, '.\\' + file.rel_path + '.flac'])
     
     # Open the audio file
-    if cover_img or artist:
+    if cover_img or metadata:
         try:
             audio = FLAC(file.rel_path + '.flac')
         except (FileNotFoundError, MutagenError):
-            print('Something went wrong, so the cover image and artist won\'t be included.')
+            print('Something went wrong, so the cover image and metadata won\'t be included.')
             cover_img = False
-            artist = False
+            metadata = False
             
     # Add the cover image
     if cover_img:
@@ -156,12 +158,12 @@ for file in wav_files:
             print('Cover image not found, so a cover image won\'t be included.')
             cover_img = False
     
-    # Add the artist
-    if artist:
-        audio['ARTIST'] = artist
+    # Add the metadata
+    for key, value in metadata:
+        audio[key] = value
     
     # Save the audio
-    if cover_img or artist:
+    if cover_img or metadata:
         audio.save()
 
 

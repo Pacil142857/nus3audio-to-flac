@@ -16,7 +16,8 @@ First, edit the settings in config.ini to your liking.
   * If left empty, then there won't be a cover image.
 * `Empty_input_folder`, if set to "True" (capitalization matters!), will **delete all files in /input after the program has finished**.
   * If it's set to anything else, such as "False", then all the files in /input won't be deleted.
-* `Artist` will set the artist of the song to whatever it's equal to.
-  * If left empty, there will be no artist for the song.
+* The `[Song Metadata]` section is where you can add any metadata to the song that you want (e.g. artist, album, genre).
+  * To use it, simply put the metadata type that you want (e.g. artist, album), followed by an equal sign, followed by the value the metadata should be set to.
+  * `Artist=Noriyuki Iwadare`, for example, will set the artist of the song(s) to Noriyuki Iwadare.
 
 After that, simply run the program using a version of Python greater than or equal to 3.6 and the files will be converted.
