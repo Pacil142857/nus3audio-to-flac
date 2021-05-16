@@ -123,14 +123,21 @@ for file in wav_files:
     subprocess.run([r'..\tools\sox\sox.exe', '.' + file.path, '.\\' + file.rel_path + '.flac'])
     
     # Open the audio file
-    if cover_img or metadata:
-        try:
-            audio = FLAC(file.rel_path + '.flac')
-        except (FileNotFoundError, MutagenError):
-            print('Something went wrong, so the cover image and metadata won\'t be included.')
-            cover_img = False
-            metadata = False
-            
+    try:
+        audio = FLAC(file.rel_path + '.flac')
+    except (FileNotFoundError, MutagenError):
+        print('Something went wrong, so the cover image and metadata won\'t be included.')
+        cover_img = False
+        metadata = False
+    
+    # Add the title
+    try:
+        audio['Title'] = file.filename
+        print(file.filename)
+    except NameError:
+        # audio variable probably wasn't initialized, so just continue
+        pass
+    
     # Add the cover image
     if cover_img:
             
